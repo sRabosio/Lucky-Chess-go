@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="static/lib/bootstrap/css/bootstrap.css">
   <script src="static/lib/bootstrap/js/bootstrap.js" defer="true"></script>
+  <script src="static/lib/htmx/htmx.min.js" defer="true"></script>
   <title>Lucky chess</title>
 </head>
 
@@ -25,48 +26,10 @@
     </div>
   </div>
   <!--content-->
-  <div style="padding-top: 10px; padding-bottom: 10px; padding-left:50px;" class="container-fluid h-100 ">
+  <div style="padding-top: 10px; padding-bottom: 10px; padding-left:50px;" class="container-fluid h-100"
+    hx-swap="innerHTML" hx-get="/game" hx-trigger="load">
     <!-- main row: keep single -->
-    <div class="row h-100">
-      <div class="col-4 ">
 
-        <!-- cards ui -->
-        <!-- TODO: move cards ui to component -->
-        <div class="row h-25" style=" background-color:rgba(200,0,0 ,0.1);">
-          <!-- opponent cards -->
-          <div style="height: 200px; width: 125px; border-radius: 4px; background-color: red;"
-            class="d-flex m-auto me-3">
-          </div>
-        </div>
-        <div class="row h-50">
-          <!-- shared ui -->
-          <div style="height: 200px; width: 125px; border-radius: 4px; background-color: red;" class="d-flex m-auto ">
-            <!-- deck -->
-          </div>
-        </div>
-        <div class="row h-25 " style="background-color:rgba(0,200,0 ,0.1);  ">
-          <!-- self cards -->
-          <div style="height: 200px; width: 125px; border-radius: 4px; background-color: red;"
-            class="d-flex m-auto me-3">
-          </div>
-        </div>
-      </div>
-      <div class="col-8 ">
-        <!-- chess ui -->
-        <div style="height: 15%;background-color:rgba(200,0,0 ,0.1);" class="row  ">
-          <!--opponent ui-->
-        </div>
-        <div class="row" style="height: 70%;">
-          <!--shared ui-->
-          <div class="h-100 w-100 d-flex">
-
-          </div>
-        </div>
-        <div class="row " style="height: 15%; background-color:rgba(0,200,0 ,0.1);">
-          <!--self ui-->
-        </div>
-      </div>
-    </div>
   </div>
 
   </div>
