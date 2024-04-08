@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"luckyChess/controllers/board"
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
 
@@ -24,6 +25,7 @@ func main() {
 	//register routes
 	index.Register(router)
 	game.Register(router)
+	board.Register(router)
 	//end register routes
 
 	//start server

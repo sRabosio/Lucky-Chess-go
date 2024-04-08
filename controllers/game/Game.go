@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const folderPath = "./templates/pages/game/"
+
 func Register(router *gin.Engine) {
 	r := router.Group("/game")
 
@@ -13,6 +15,6 @@ func Register(router *gin.Engine) {
 }
 
 func getGame(context *gin.Context) {
-	templ := template.Must(template.ParseFiles("./pages/game/game.html"))
+	templ := template.Must(template.ParseFiles(folderPath + "game.html"))
 	templ.Execute(context.Writer, nil)
 }
