@@ -7,6 +7,8 @@ import (
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +20,10 @@ func main() {
 	//todo: replace w/ port from args
 
 	router := gin.Default()
+
+	store := cookie.NewStore([]byte("gameState"))
+
+	router.Use(sessions.Sessions("gameState", store))
 
 	//register assets
 	router.Static("static", "./assets")

@@ -1,0 +1,46 @@
+{
+  "player_1":{
+    "1":{
+      "1":"rook",
+      "2":"knight",
+      "3":"bishop",
+      "4":"queen",
+      "5":"king",
+      "6":"bishop",
+      "7":"knight",
+      "8":"rook"
+    },
+    "2":{
+      "1": "pawn",
+      "2": "pawn",
+      "3": "pawn",
+      "4": "pawn",
+      "5": "pawn",
+      "6": "pawn",
+      "7": "pawn",
+      "8": "pawn"
+    }
+  },
+  "player_2":{
+      "8":{
+        "1":"rook",
+        "2":"knight",
+        "3":"bishop",
+        "4":"king",
+        "5":"queen",
+        "6":"bishop",
+        "7":"knight",
+        "8":"rook"
+      },
+      "7":{
+        "1": "pawn",
+        "2": "pawn",
+        "3": "pawn",
+        "4": "pawn",
+        "5": "pawn",
+        "6": "pawn",
+        "7": "pawn",
+        "8": "pawn"
+      }
+    }
+}
