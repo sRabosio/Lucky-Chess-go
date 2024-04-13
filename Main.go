@@ -22,6 +22,9 @@ func main() {
 	//register assets
 	router.Static("static", "./assets")
 
+	router.LoadHTMLGlob("templates/**/*.html")
+	router.LoadHTMLGlob("templates/**/**/*.html")
+
 	//register routes
 	index.Register(router)
 	game.Register(router)

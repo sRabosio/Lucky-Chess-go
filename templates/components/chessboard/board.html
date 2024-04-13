@@ -1,5 +1,11 @@
 <table>
   <tbody style="background-color: aqua;">
-    {{.rows}}
+    {{range .Rows}}
+    <tr>
+      {{range .Tiles}}
+      <td>{{.Content}}</td>
+      {{end}}
+    </tr>
+    {{end}}
   </tbody>
 </table>

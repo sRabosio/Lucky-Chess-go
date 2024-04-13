@@ -10,8 +10,8 @@ const folderPath = "./templates/pages/game/"
 
 func Register(router *gin.Engine) {
 	r := router.Group("/game")
-
 	r.GET("", getGame)
+
 }
 
 func getGame(context *gin.Context) {
