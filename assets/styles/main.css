@@ -1,0 +1,15 @@
+.chessboard > tbody > tr:nth-child(even) > td:nth-child(even){
+  background-color: brown;
+}
+
+.chessboard > tbody > tr:nth-child(even) > td:nth-child(odd){
+  background-color: bisque;
+}
+
+.chessboard > tbody > tr:nth-child(odd) > td:nth-child(even){
+  background-color: bisque;
+}
+
+.chessboard > tbody > tr:nth-child(odd) > td:nth-child(odd){
+  background-color: brown;
+}
