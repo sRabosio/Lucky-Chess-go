@@ -2,13 +2,14 @@ package game
 
 import (
 	"html/template"
+	"luckyChess/services/interfaces"
 
 	"github.com/gin-gonic/gin"
 )
 
 const folderPath = "./templates/pages/game/"
 
-func Register(router *gin.Engine) {
+func Register(router *gin.Engine, gameStore interfaces.IGameStoreService) {
 	r := router.Group("/game")
 	r.GET("", getGame)
 

@@ -6,6 +6,7 @@ import (
 	"luckyChess/controllers/board"
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
+	GameStoreService "luckyChess/services/store"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -23,6 +24,8 @@ func main() {
 
 	store := cookie.NewStore([]byte("gameState"))
 
+	gameStoreService := GameStoreService.New()
+
 	router.Use(sessions.Sessions("gameState", store))
 
 	//register assets
@@ -33,7 +36,7 @@ func main() {
 
 	//register routes
 	index.Register(router)
-	game.Register(router)
+	game.Register(router, gameStoreService)
 	board.Register(router)
 	//end register routes
 
