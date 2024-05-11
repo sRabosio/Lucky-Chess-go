@@ -1,7 +1,11 @@
 package entities
 
 type Game struct {
-	Board Board
+	Board             Board
+	Players           []Player
+	TurnCounter       int
+	CurrentPlayerTurn string
+	CardStack         []Card
 }
 
 type Board struct {
@@ -13,7 +17,8 @@ type Row struct {
 }
 
 type Tile struct {
-	Piece int
+	Piece    int
+	PlayerID string
 }
 
 type TileCoords struct {
@@ -23,7 +28,6 @@ type TileCoords struct {
 
 type Player struct {
 	Code           string
-	AlivePieces    []TileCoords
 	DefeatedPieces []int
 	DrawnCard      Card
 }
