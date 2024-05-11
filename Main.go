@@ -1,12 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"luckyChess/controllers/board"
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
+	"luckyChess/entities"
 	GameStoreService "luckyChess/services/store"
+	"os"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -19,6 +22,8 @@ func main() {
 	fmt.Println("starting server")
 
 	//todo: replace w/ port from args
+	println("strating set")
+	getStartingSet()
 
 	router := gin.Default()
 
@@ -42,4 +47,21 @@ func main() {
 
 	//start server
 	log.Fatal(router.Run())
+}
+
+func getStartingSet() *entities.Board {
+	bytes, err := os.ReadFile("gameTemplates/default.json")
+
+	defer func() {
+		if err == nil {
+			return
+		}
+		panic(err)
+	}()
+
+	var res *entities.Board
+
+	json.Unmarshal(bytes, res)
+
+	return res
 }
