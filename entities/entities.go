@@ -9,11 +9,11 @@ type Game struct {
 }
 
 type Board struct {
-	Rows [7]Row
+	Rows [8]Row
 }
 
 type Row struct {
-	Tiles [7]Tile
+	Tiles [8]Tile
 }
 
 type Tile struct {
@@ -35,4 +35,8 @@ type Player struct {
 type Card struct {
 	Code  int
 	Value int
+}
+
+type BoardTemplate struct {
+	Template []map[int]map[int]string
 }

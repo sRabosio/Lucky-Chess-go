@@ -23,7 +23,7 @@ func main() {
 
 	//todo: replace w/ port from args
 	println("strating set")
-	getStartingSet()
+	startingSet := getStartingSet()
 
 	router := gin.Default()
 
@@ -32,6 +32,8 @@ func main() {
 	gameStoreService := GameStoreService.New()
 
 	router.Use(sessions.Sessions("gameState", store))
+
+	gameStoreService.NewGame(*startingSet)
 
 	//register assets
 	router.Static("static", "./assets")
@@ -49,7 +51,7 @@ func main() {
 	log.Fatal(router.Run())
 }
 
-func getStartingSet() *entities.Board {
+func getStartingSet() *entities.BoardTemplate {
 	bytes, err := os.ReadFile("gameTemplates/default.json")
 
 	defer func() {
@@ -59,9 +61,9 @@ func getStartingSet() *entities.Board {
 		panic(err)
 	}()
 
-	var res *entities.Board
+	jsonOut := entities.BoardTemplate{}
 
-	json.Unmarshal(bytes, res)
+	json.Unmarshal(bytes, &jsonOut.Template)
 
-	return res
+	return &jsonOut
 }
