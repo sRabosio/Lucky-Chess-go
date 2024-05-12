@@ -13,3 +13,30 @@
 .chessboard > tbody > tr:nth-child(odd) > td:nth-child(odd){
   background-color: brown;
 }
+
+.chessboard-grid{
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  aspect-ratio: 1;
+}
+
+.chessboard-grid > *{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.chessboard-grid > *:nth-child(even) > *:nth-child(even){
+  background-color: brown;
+}
+
+.chessboard-grid  > *:nth-child(even) > *:nth-child(odd){
+  background-color: bisque;
+}
+
+.chessboard-grid  > *:nth-child(odd) > *:nth-child(even){
+  background-color: bisque;
+}
+
+.chessboard-grid  > *:nth-child(odd) > *:nth-child(odd){
+  background-color: brown;
+}

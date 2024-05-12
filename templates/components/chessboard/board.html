@@ -1,4 +1,4 @@
-<table class="h-100 m-auto chessboard" style="aspect-ratio: 1;">
+<!-- <table class="h-100 m-auto chessboard" style="aspect-ratio: 1;table-layout: fixed;">
   <tbody>
     {{range .Board.Rows}}
     <tr>
@@ -8,4 +8,16 @@
     </tr>
     {{end}}
   </tbody>
-</table>
+</table> -->
+
+<div class="h-100 m-auto chessboard-grid ">
+  {{range .Board.Rows}}
+  <div>
+    {{range .Tiles}}
+    <div class="d-flex text-center align-items-center justify-content-center ">
+      {{.Piece}}
+    </div>
+    {{end}}
+  </div>
+  {{end}}
+</div>
