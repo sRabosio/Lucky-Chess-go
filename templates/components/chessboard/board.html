@@ -1,9 +1,9 @@
 <table class="h-100 m-auto chessboard" style="aspect-ratio: 1;">
   <tbody>
-    {{range .Rows}}
+    {{range .Board.Rows}}
     <tr>
       {{range .Tiles}}
-      <td>{{.Content}}</td>
+      <td>{{.Piece}}</td>
       {{end}}
     </tr>
     {{end}}

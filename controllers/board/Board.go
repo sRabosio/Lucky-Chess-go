@@ -1,47 +1,29 @@
 package board
 
 import (
+	"luckyChess/services/interfaces"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type ChessBoardData struct {
-	Rows [8]ChessBoardRow
-}
+var _gameStoreService interfaces.IGameStoreService
 
-type ChessBoardRow struct {
-	Tiles [8]ChessBoardTile
-}
-
-type ChessBoardTile struct {
-	Content string
-}
-
-func Register(router *gin.Engine) {
+func Register(router *gin.Engine, gameStoreService interfaces.IGameStoreService) {
 
 	r := router.Group("/board")
 	r.GET("", getBoard)
+
+	_gameStoreService = gameStoreService
 }
 
 func getBoard(context *gin.Context) {
 
-	data := ChessBoardData{}
-	for i := 0; i < 8; i++ {
-		row := ChessBoardRow{}
-		for j := 0; j < 8; j++ {
-			tile := ChessBoardTile{
-				Content: strconv.Itoa(j),
-			}
-			row.Tiles[j] = tile
-		}
-		data.Rows[i] = row
-	}
+	game := _gameStoreService.GetGame("1")
 
 	context.HTML(
 		http.StatusOK,
 		"board.html",
-		data,
+		game,
 	)
 }

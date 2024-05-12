@@ -2,6 +2,7 @@ package gameStore
 
 import (
 	"luckyChess/entities"
+	eChess "luckyChess/entities/EChess"
 	"strconv"
 )
 
@@ -21,17 +22,23 @@ func (g GameStoreService) NewGame(startingSet entities.BoardTemplate) entities.G
 		Rows: [8]entities.Row{},
 	}
 
+	//init template
 	for plIndex, t := range startingSet.Template {
 		for rowKey, row := range t {
 			var currentRow *entities.Row = &board.Rows[rowKey]
-			for tileKey, _ := range row {
+			for tileKey, tile := range row {
+
+				//TODO: use enum to convert string from json to int
+
 				currentRow.Tiles[tileKey] = entities.Tile{
-					Piece:    1,
+					Piece:    eChess.Parse(tile),
 					PlayerID: strconv.Itoa(plIndex),
 				}
 			}
 		}
 	}
+
+	//TODO: assign actual players
 
 	newGame := entities.Game{
 		Board: board,

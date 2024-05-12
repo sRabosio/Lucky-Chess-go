@@ -1,5 +1,7 @@
 package entities
 
+import eChess "luckyChess/entities/EChess"
+
 type Game struct {
 	Board             Board
 	Players           []Player
@@ -17,7 +19,7 @@ type Row struct {
 }
 
 type Tile struct {
-	Piece    int
+	Piece    eChess.EChess
 	PlayerID string
 }
 

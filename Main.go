@@ -18,6 +18,9 @@ import (
 
 const prodPort = ""
 
+// singleton services
+var gameStoreService = GameStoreService.New()
+
 func main() {
 	fmt.Println("starting server")
 
@@ -29,8 +32,6 @@ func main() {
 
 	store := cookie.NewStore([]byte("gameState"))
 
-	gameStoreService := GameStoreService.New()
-
 	router.Use(sessions.Sessions("gameState", store))
 
 	gameStoreService.NewGame(*startingSet)
@@ -38,17 +39,22 @@ func main() {
 	//register assets
 	router.Static("static", "./assets")
 
+	//load templates
 	router.LoadHTMLGlob("templates/**/*.html")
 	router.LoadHTMLGlob("templates/**/**/*.html")
 
-	//register routes
-	index.Register(router)
-	game.Register(router, gameStoreService)
-	board.Register(router)
-	//end register routes
+	initRoutes(router)
 
 	//start server
 	log.Fatal(router.Run())
+}
+
+func initRoutes(router *gin.Engine) {
+	//register routes
+	index.Register(router)
+	game.Register(router, gameStoreService)
+	board.Register(router, gameStoreService)
+	//end register routes
 }
 
 func getStartingSet() *entities.BoardTemplate {
