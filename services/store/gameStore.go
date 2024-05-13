@@ -45,7 +45,7 @@ func (g GameStoreService) NewGame(startingSet entities.BoardTemplate) entities.G
 	}
 
 	g.gameList["1"] = newGame
-	return g.gameList["1"]
+	return newGame
 }
 
 func (g GameStoreService) GetGame(gameCode string) entities.Game {

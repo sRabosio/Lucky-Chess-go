@@ -17,3 +17,10 @@ type IGameStateService interface {
 	DrawCard(game *entities.Game, playerCode string) *entities.Card
 	CheckWin(game *entities.Game) string /*return player code if a player has won, otherwise returns empty string*/
 }
+
+type IGameTemplatesService interface {
+	GetTemplate(name string) entities.BoardTemplate
+	NewTemplate(name string, template entities.BoardTemplate) error
+	AtlerTemplate(name string, template entities.BoardTemplate) error
+	RemoveTemplate(name string, template entities.BoardTemplate) error
+}

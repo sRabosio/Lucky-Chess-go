@@ -20,6 +20,10 @@
   aspect-ratio: 1;
 }
 
+.chessboard-grid *{
+  cursor: default;
+}
+
 .chessboard-grid > *{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;

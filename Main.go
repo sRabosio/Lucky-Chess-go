@@ -1,15 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"luckyChess/controllers/board"
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
-	"luckyChess/entities"
+	"luckyChess/services/gameTemplateService"
 	GameStoreService "luckyChess/services/store"
-	"os"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -26,15 +24,11 @@ func main() {
 
 	//todo: replace w/ port from args
 	println("strating set")
-	startingSet := getStartingSet()
 
 	router := gin.Default()
 
-	store := cookie.NewStore([]byte("gameState"))
-
-	router.Use(sessions.Sessions("gameState", store))
-
-	gameStoreService.NewGame(*startingSet)
+	store := cookie.NewStore([]byte("gameCode"))
+	router.Use(sessions.Sessions("gameCode", store))
 
 	//register assets
 	router.Static("static", "./assets")
@@ -50,26 +44,10 @@ func main() {
 }
 
 func initRoutes(router *gin.Engine) {
+
 	//register routes
 	index.Register(router)
 	game.Register(router, gameStoreService)
-	board.Register(router, gameStoreService)
+	board.Register(router, gameStoreService, gameTemplateService.New())
 	//end register routes
-}
-
-func getStartingSet() *entities.BoardTemplate {
-	bytes, err := os.ReadFile("gameTemplates/default.json")
-
-	defer func() {
-		if err == nil {
-			return
-		}
-		panic(err)
-	}()
-
-	jsonOut := entities.BoardTemplate{}
-
-	json.Unmarshal(bytes, &jsonOut.Template)
-
-	return &jsonOut
 }
