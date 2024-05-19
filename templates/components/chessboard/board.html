@@ -11,11 +11,12 @@
 </table> -->
 
 <div class="h-100 m-auto chessboard-grid ">
-  {{range .Board.Rows}}
+  {{range $rNum, $row := .Board.Rows}}
   <div>
-    {{range .Tiles}}
-    <div class="d-flex text-center align-items-center justify-content-center">
-      {{.Piece}}
+    {{range $tNum, $tile := $row.Tiles}}
+    <div class="d-flex text-center align-items-center justify-content-center" hx-on="click"
+      hx-get="/board/getMoves?x={{$tNum}}&y=${{$rNum}}">
+      {{$tile.Piece}}
     </div>
     {{end}}
   </div>

@@ -16,6 +16,7 @@ func Register(router *gin.Engine, gameStoreService interfaces.IGameStoreService,
 
 	r := router.Group("/board")
 	r.GET("", getBoard)
+	r.GET("/getMoves", getMoves)
 
 	_gameStoreService = gameStoreService
 	_gameTemplateService = gameTemplateService
@@ -47,4 +48,8 @@ func getBoard(context *gin.Context) {
 		"board.html",
 		game,
 	)
+}
+
+func getMoves(context *gin.Context) {
+	println("x: " + context.Query("x") + "y: " + context.Query("y"))
 }
