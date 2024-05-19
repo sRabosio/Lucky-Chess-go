@@ -44,3 +44,11 @@
 .chessboard-grid  > *:nth-child(odd) > *:nth-child(odd){
   background-color: brown;
 }
+
+.chessboard-grid *[data-state=selected]{
+  background-color: green !important;
+}
+
+.chessboard-grid *[data-state=highlighted]{
+  background-color: darkgoldenrod !important;
+}

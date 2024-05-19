@@ -4,6 +4,7 @@ import (
 	"luckyChess/entities"
 	"luckyChess/services/interfaces"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -51,5 +52,41 @@ func getBoard(context *gin.Context) {
 }
 
 func getMoves(context *gin.Context) {
-	println("x: " + context.Query("x") + "y: " + context.Query("y"))
+
+	game := _gameStoreService.GetGame("1")
+	status := http.StatusOK
+
+	defer func() {
+		context.HTML(
+			status,
+			"board.html",
+			game,
+		)
+	}()
+
+	x, err := strconv.Atoi(context.Query("x"))
+
+	if err != nil {
+		status = http.StatusBadRequest
+		return
+	}
+
+	y, err := strconv.Atoi(context.Query("y"))
+
+	if err != nil {
+		status = http.StatusBadRequest
+		return
+	}
+
+	//selected
+	selectedTile := &game.Board.Rows[y].Tiles[x]
+
+	if selectedTile.Piece == 0 {
+		return
+	}
+
+	selectedTile.State = "selected"
+	//highlighted
+	game.Board.Rows[y+1].Tiles[x].State = "highlighted"
+
 }

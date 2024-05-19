@@ -1,21 +1,10 @@
-<!-- <table class="h-100 m-auto chessboard" style="aspect-ratio: 1;table-layout: fixed;">
-  <tbody>
-    {{range .Board.Rows}}
-    <tr>
-      {{range .Tiles}}
-      <td>{{.Piece}}</td>
-      {{end}}
-    </tr>
-    {{end}}
-  </tbody>
-</table> -->
-
-<div class="h-100 m-auto chessboard-grid ">
+<div class="h-100 m-auto chessboard-grid " id="board">
   {{range $rNum, $row := .Board.Rows}}
   <div>
     {{range $tNum, $tile := $row.Tiles}}
     <div class="d-flex text-center align-items-center justify-content-center" hx-on="click"
-      hx-get="/board/getMoves?x={{$tNum}}&y=${{$rNum}}">
+      hx-get="/board/getMoves?x={{$tNum}}&y={{$rNum}}" hx-target="#board" hx-swap="outerHTML"
+      data-state="{{$tile.State}}">
       {{$tile.Piece}}
     </div>
     {{end}}

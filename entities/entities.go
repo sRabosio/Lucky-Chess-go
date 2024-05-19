@@ -21,6 +21,7 @@ type Row struct {
 type Tile struct {
 	Piece    eChess.EChess
 	PlayerID string
+	State    string
 }
 
 type TileCoords struct {
