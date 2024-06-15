@@ -12,8 +12,12 @@ import (
 
 var _gameStoreService interfaces.IGameStoreService
 var _gameTemplateService interfaces.IGameTemplatesService
+var _gameStateService interfaces.IGameStateService
 
-func Register(router *gin.Engine, gameStoreService interfaces.IGameStoreService, gameTemplateService interfaces.IGameTemplatesService) {
+func Register(router *gin.Engine,
+	gameStoreService interfaces.IGameStoreService,
+	gameTemplateService interfaces.IGameTemplatesService,
+	gameStateService interfaces.IGameStateService) {
 
 	r := router.Group("/board")
 	r.GET("", getBoard)
@@ -21,6 +25,7 @@ func Register(router *gin.Engine, gameStoreService interfaces.IGameStoreService,
 
 	_gameStoreService = gameStoreService
 	_gameTemplateService = gameTemplateService
+	_gameStateService = gameStateService
 }
 
 func getBoard(context *gin.Context) {
@@ -53,10 +58,16 @@ func getBoard(context *gin.Context) {
 
 func getMoves(context *gin.Context) {
 
+	var err error
 	game := _gameStoreService.GetGame("1")
 	status := http.StatusOK
 
 	defer func() {
+		if err != nil {
+			println("GetMoves -> " + err.Error())
+			context.Error(err)
+		}
+
 		context.HTML(
 			status,
 			"board.html",
@@ -78,15 +89,27 @@ func getMoves(context *gin.Context) {
 		return
 	}
 
-	//selected
-	selectedTile := &game.Board.Rows[y].Tiles[x]
+	moveSet, err := _gameStateService.GetMoveset(&game, "1", entities.TileCoords{Tile: x, Row: y})
 
-	if selectedTile.Piece == 0 {
+	if err != nil {
+		status = http.StatusBadRequest
 		return
 	}
 
-	selectedTile.State = "selected"
-	//highlighted
-	game.Board.Rows[y+1].Tiles[x].State = "highlighted"
+	selectedTile := &game.Board.Rows[y].Tiles[x]
 
+	//selected
+	if selectedTile.Piece > 0 {
+		selectedTile.State = "selected"
+	}
+
+	for _, move := range moveSet {
+		currentTile := &game.Board.Rows[move.Row].Tiles[move.Tile]
+
+		if currentTile.Piece > 0 {
+			currentTile.State = "eat"
+		} else {
+			currentTile.State = "highlighted"
+		}
+	}
 }

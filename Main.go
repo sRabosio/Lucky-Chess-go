@@ -6,6 +6,7 @@ import (
 	"luckyChess/controllers/board"
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
+	"luckyChess/services/gameStateService"
 	"luckyChess/services/gameTemplateService"
 	GameStoreService "luckyChess/services/store"
 
@@ -48,6 +49,8 @@ func initRoutes(router *gin.Engine) {
 	//register routes
 	index.Register(router)
 	game.Register(router, gameStoreService)
-	board.Register(router, gameStoreService, gameTemplateService.New())
+	board.Register(router, gameStoreService,
+		gameTemplateService.New(),
+		gameStateService.New())
 	//end register routes
 }
