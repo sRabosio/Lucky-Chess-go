@@ -24,7 +24,15 @@ func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pie
 	res := []entities.TileCoords{}
 	//TODO CHECK PLAYER TYPE: ex(first or second/ black or white)
 
-	rowLen := len(game.Board.Rows)
+	rowNum := len(game.Board.Rows)
+	if y >= rowNum-1 {
+		return res, errors.New("out of bounds")
+	}
+
+	tileNum := len(game.Board.Rows[y].Tiles)
+	if x >= tileNum-1 {
+		return res, errors.New("out of bounds")
+	}
 
 	if selectedTile.Piece < 1 {
 		return []entities.TileCoords{}, nil
@@ -34,14 +42,30 @@ func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pie
 		return res, errors.New("invalid player")
 	}
 
-	switch selectedPiece := selectedTile.Piece; selectedPiece {
-	case eChess.PAWN:
+	movesetGetter := chessMoveset[selectedTile.Piece]
+	if movesetGetter == nil {
+		return nil, errors.New("missing getter for piece type " + selectedTile.Piece.String())
+	}
 
-		if y >= rowLen-1 {
-			break
-		}
+	res, err := movesetGetter(game, x, y)
 
-		//NB: this is bottom player prospective
+	return res, err
+}
+
+func (g GameStateService) DrawCard(game *entities.Game, playerCode string) (*entities.Card, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (g GameStateService) CheckWin(game *entities.Game) (string, error) {
+	return "", errors.New("not implemented")
+}
+
+type movesetGetter func(game *entities.Game, x int, y int) ([]entities.TileCoords, error)
+
+// NB: coordinates are calculated from bottom player prespective
+var chessMoveset = map[eChess.EChess]movesetGetter{
+	eChess.PAWN: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
+		res := []entities.TileCoords{}
 
 		//in front
 		if game.Board.Rows[y-1].Tiles[x].Piece < 1 {
@@ -58,24 +82,15 @@ func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pie
 			res = append(res, entities.TileCoords{Tile: x + 1, Row: y})
 		}
 
-	case eChess.BISHOP:
-		//towards bottom
-		if rowLen < y {
+		return res, nil
+	},
+	eChess.ROOK: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
+		// rows := slices.Clone()
+		// slices.Reverse()
+		// //column movement
+		// for i, row := range game.Board.Rows {
 
-		}
-
-		//towards top
-		if rowLen < 1 {
-
-		}
-	}
-	return res, nil
-}
-
-func (g GameStateService) DrawCard(game *entities.Game, playerCode string) (*entities.Card, error) {
-	return nil, errors.New("not implemented")
-}
-
-func (g GameStateService) CheckWin(game *entities.Game) (string, error) {
-	return "", errors.New("not implemented")
+		// }
+		return []entities.TileCoords{}, nil
+	},
 }
