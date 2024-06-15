@@ -43,7 +43,7 @@ func getBoard(context *gin.Context) {
 
 	if val == nil {
 		game = _gameStoreService.NewGame(
-			_gameTemplateService.GetTemplate("default"),
+			_gameTemplateService.GetTemplate("debug_nopawns"),
 		)
 	} else {
 		game = _gameStoreService.GetGame(val.(string))

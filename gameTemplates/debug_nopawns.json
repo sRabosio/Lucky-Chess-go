@@ -1,0 +1,26 @@
+[
+  {
+    "0":{
+      "0":"rook",
+      "1":"knight",
+      "2":"bishop",
+      "3":"queen",
+      "4":"king",
+      "5":"bishop",
+      "6":"knight",
+      "7":"rook"
+    }
+  },
+  {
+      "7":{
+        "0":"rook",
+        "1":"knight",
+        "2":"bishop",
+        "3":"king",
+        "4":"queen",
+        "5":"bishop",
+        "6":"knight",
+        "7":"rook"
+      }
+    }
+  ]

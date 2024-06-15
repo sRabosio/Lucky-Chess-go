@@ -25,12 +25,12 @@ func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pie
 	//TODO CHECK PLAYER TYPE: ex(first or second/ black or white)
 
 	rowNum := len(game.Board.Rows)
-	if y >= rowNum-1 {
+	if y > rowNum-1 {
 		return res, errors.New("out of bounds")
 	}
 
 	tileNum := len(game.Board.Rows[y].Tiles)
-	if x >= tileNum-1 {
+	if x > tileNum-1 {
 		return res, errors.New("out of bounds")
 	}
 
@@ -85,12 +85,45 @@ var chessMoveset = map[eChess.EChess]movesetGetter{
 		return res, nil
 	},
 	eChess.ROOK: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
-		// rows := slices.Clone()
-		// slices.Reverse()
-		// //column movement
-		// for i, row := range game.Board.Rows {
 
-		// }
-		return []entities.TileCoords{}, nil
+		res := []entities.TileCoords{}
+
+		rows := game.Board.Rows
+
+		//upward movement
+		for i := y - 1; i > -1; i-- {
+			if rows[i].Tiles[x].Piece > 0 {
+				break
+			}
+			res = append(res, entities.TileCoords{Row: i, Tile: x})
+		}
+
+		//downward movement
+		for i := y + 1; i < len(rows)-1; i++ {
+			if rows[i].Tiles[x].Piece > 0 {
+				break
+			}
+			res = append(res, entities.TileCoords{Row: i, Tile: x})
+		}
+
+		tiles := rows[y].Tiles
+
+		//eastward movement
+		for i := x + 1; i < len(tiles)-1; i++ {
+			if tiles[i].Piece > 0 {
+				break
+			}
+			res = append(res, entities.TileCoords{Row: y, Tile: i})
+		}
+
+		//westward movement
+		for i := x - 1; i > -1; i-- {
+			if tiles[i].Piece > 0 {
+				break
+			}
+			res = append(res, entities.TileCoords{Row: y, Tile: i})
+		}
+
+		return res, nil
 	},
 }
