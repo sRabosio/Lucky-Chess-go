@@ -126,4 +126,96 @@ var chessMoveset = map[eChess.EChess]movesetGetter{
 
 		return res, nil
 	},
+	eChess.KNIGHT: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
+		res := []entities.TileCoords{}
+
+		trySetCoords := func(xCurr int, yCurr int) bool {
+			if yCurr < 0 || yCurr > len(game.Board.Rows)-1 {
+				return false
+			}
+
+			if xCurr < 0 || xCurr > len(game.Board.Rows[yCurr].Tiles)-1 {
+				return false
+			}
+
+			if game.Board.Rows[yCurr].Tiles[xCurr].Piece > 0 {
+				return false
+			}
+
+			res = append(res, entities.TileCoords{Row: yCurr, Tile: xCurr})
+			return true
+		}
+
+		//up left
+		trySetCoords(x-2, y-1)
+		trySetCoords(x-1, y-2)
+
+		//up right
+		trySetCoords(x+2, y-1)
+		trySetCoords(x+1, y-2)
+
+		//down right
+		trySetCoords(x+2, y+1)
+		trySetCoords(x+1, y+2)
+
+		//down left
+		trySetCoords(x-2, y+1)
+		trySetCoords(x-1, y+2)
+
+		return res, nil
+	},
+	// eChess.BISHOP: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
+	// 	res := []entities.TileCoords{}
+
+	// 	trySetCoords := func(xCurr int, yCurr int) bool {
+	// 		if yCurr < 0 || yCurr > len(game.Board.Rows)-1 {
+	// 			return false
+	// 		}
+
+	// 		if xCurr < 0 || xCurr > len(game.Board.Rows[yCurr].Tiles)-1 {
+	// 			return false
+	// 		}
+
+	// 		if game.Board.Rows[yCurr].Tiles[xCurr].Piece > 0 {
+	// 			return false
+	// 		}
+
+	// 		res = append(res, entities.TileCoords{Row: yCurr, Tile: xCurr})
+	// 		return true
+	// 	}
+
+	// 	//up left movement
+	// 	for i := y - 1; i > -1; i-- {
+	// 		if rows[i].Tiles[x].Piece > 0 {
+	// 			break
+	// 		}
+	// 		res = append(res, entities.TileCoords{Row: i, Tile: x})
+	// 	}
+
+	// 	//downward movement
+	// 	for i := y + 1; i < len(rows)-1; i++ {
+	// 		if rows[i].Tiles[x].Piece > 0 {
+	// 			break
+	// 		}
+	// 		res = append(res, entities.TileCoords{Row: i, Tile: x})
+	// 	}
+
+	// 	tiles := rows[y].Tiles
+
+	// 	//eastward movement
+	// 	for i := x + 1; i < len(tiles)-1; i++ {
+	// 		if tiles[i].Piece > 0 {
+	// 			break
+	// 		}
+	// 		res = append(res, entities.TileCoords{Row: y, Tile: i})
+	// 	}
+
+	// 	//westward movement
+	// 	for i := x - 1; i > -1; i-- {
+	// 		if tiles[i].Piece > 0 {
+	// 			break
+	// 		}
+	// 		res = append(res, entities.TileCoords{Row: y, Tile: i})
+	// 	}
+	// },
 }
