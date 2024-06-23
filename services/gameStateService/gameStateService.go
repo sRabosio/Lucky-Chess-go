@@ -12,8 +12,32 @@ func New() *GameStateService {
 	return &GameStateService{}
 }
 
-func (g GameStateService) MovePiece(game *entities.Game, pieceCoords entities.TileCoords, targetCoords entities.TileCoords) bool {
+func (g GameStateService) MovePiece(game *entities.Game, playerCode string, pieceCoords entities.TileCoords, targetCoords entities.TileCoords) bool {
 	panic("not implemented")
+	// moveset, err := g.GetMoveset(game, playerCode, pieceCoords)
+	// if err != nil {
+	// 	return false
+	// }
+
+	// isMoveValid := false
+	// for _, coords := range moveset {
+	// 	if targetCoords.Row == coords.Row && targetCoords.Tile == coords.Tile {
+	// 		isMoveValid = true
+	// 	}
+	// }
+	// if !isMoveValid {
+	// 	return false
+	// }
+
+	// piece := game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece
+	// plId := game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID
+
+	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece = 0
+	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID = ""
+
+	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece = piece
+	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID = plId
+	// return true
 }
 
 func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pieceCoords entities.TileCoords) ([]entities.TileCoords, error) {
@@ -42,6 +66,25 @@ func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pie
 		return res, errors.New("invalid player")
 	}
 
+	//queen = bishop + rook
+	//also can't reference map inside itself :(
+	if selectedTile.Piece == eChess.QUEEN {
+		res := []entities.TileCoords{}
+		currRes, err := chessMoveset[eChess.BISHOP](game, x, y)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, currRes...)
+
+		currRes, err = chessMoveset[eChess.ROOK](game, x, y)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, currRes...)
+
+		return res, nil
+	}
+
 	movesetGetter := chessMoveset[selectedTile.Piece]
 	if movesetGetter == nil {
 		return nil, errors.New("missing getter for piece type " + selectedTile.Piece.String())
@@ -58,6 +101,21 @@ func (g GameStateService) DrawCard(game *entities.Game, playerCode string) (*ent
 
 func (g GameStateService) CheckWin(game *entities.Game) (string, error) {
 	return "", errors.New("not implemented")
+}
+
+func trySetCoords(game *entities.Game, xCurr int, yCurr int) (bool, *entities.TileCoords) {
+	if yCurr < 0 || yCurr > len(game.Board.Rows)-1 {
+		return false, nil
+	}
+
+	if xCurr < 0 || xCurr > len(game.Board.Rows[yCurr].Tiles)-1 {
+		return false, nil
+	}
+
+	if game.Board.Rows[yCurr].Tiles[xCurr].Piece > 0 {
+		return false, nil
+	}
+	return true, &entities.TileCoords{Row: yCurr, Tile: xCurr}
 }
 
 type movesetGetter func(game *entities.Game, x int, y int) ([]entities.TileCoords, error)
@@ -129,93 +187,134 @@ var chessMoveset = map[eChess.EChess]movesetGetter{
 	eChess.KNIGHT: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
 		res := []entities.TileCoords{}
 
-		trySetCoords := func(xCurr int, yCurr int) bool {
-			if yCurr < 0 || yCurr > len(game.Board.Rows)-1 {
-				return false
-			}
-
-			if xCurr < 0 || xCurr > len(game.Board.Rows[yCurr].Tiles)-1 {
-				return false
-			}
-
-			if game.Board.Rows[yCurr].Tiles[xCurr].Piece > 0 {
-				return false
-			}
-
-			res = append(res, entities.TileCoords{Row: yCurr, Tile: xCurr})
-			return true
+		//up left
+		valid, coords := trySetCoords(game, x-2, y-1)
+		if valid {
+			res = append(res, *coords)
+		}
+		valid, coords = trySetCoords(game, x-1, y-2)
+		if valid {
+			res = append(res, *coords)
 		}
 
-		//up left
-		trySetCoords(x-2, y-1)
-		trySetCoords(x-1, y-2)
-
 		//up right
-		trySetCoords(x+2, y-1)
-		trySetCoords(x+1, y-2)
+		valid, coords = trySetCoords(game, x+2, y-1)
+		if valid {
+			res = append(res, *coords)
+		}
+		valid, coords = trySetCoords(game, x+1, y-2)
+		if valid {
+			res = append(res, *coords)
+		}
 
 		//down right
-		trySetCoords(x+2, y+1)
-		trySetCoords(x+1, y+2)
+		valid, coords = trySetCoords(game, x+2, y+1)
+		if valid {
+			res = append(res, *coords)
+		}
+		valid, coords = trySetCoords(game, x+1, y+2)
+		if valid {
+			res = append(res, *coords)
+		}
 
 		//down left
-		trySetCoords(x-2, y+1)
-		trySetCoords(x-1, y+2)
+		valid, coords = trySetCoords(game, x-2, y+1)
+		if valid {
+			res = append(res, *coords)
+		}
+		valid, coords = trySetCoords(game, x-1, y+2)
+		if valid {
+			res = append(res, *coords)
+		}
 
 		return res, nil
 	},
-	// eChess.BISHOP: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
-	// 	res := []entities.TileCoords{}
+	eChess.BISHOP: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
 
-	// 	trySetCoords := func(xCurr int, yCurr int) bool {
-	// 		if yCurr < 0 || yCurr > len(game.Board.Rows)-1 {
-	// 			return false
-	// 		}
+		res := []entities.TileCoords{}
 
-	// 		if xCurr < 0 || xCurr > len(game.Board.Rows[yCurr].Tiles)-1 {
-	// 			return false
-	// 		}
+		leftX := x
+		rightX := x
+		//up movement
+		for i := y - 1; i > -1; i-- {
+			leftX--
+			rightX++
 
-	// 		if game.Board.Rows[yCurr].Tiles[xCurr].Piece > 0 {
-	// 			return false
-	// 		}
+			valid, coords := trySetCoords(game, leftX, i)
+			if valid {
+				res = append(res, *coords)
+			}
 
-	// 		res = append(res, entities.TileCoords{Row: yCurr, Tile: xCurr})
-	// 		return true
-	// 	}
+			valid, coords = trySetCoords(game, rightX, i)
+			if valid {
+				res = append(res, *coords)
+			}
+		}
 
-	// 	//up left movement
-	// 	for i := y - 1; i > -1; i-- {
-	// 		if rows[i].Tiles[x].Piece > 0 {
-	// 			break
-	// 		}
-	// 		res = append(res, entities.TileCoords{Row: i, Tile: x})
-	// 	}
+		//down movement
+		leftX = x
+		rightX = x
+		for i := y + 1; i < len(game.Board.Rows)-1; i++ {
+			leftX--
+			rightX++
 
-	// 	//downward movement
-	// 	for i := y + 1; i < len(rows)-1; i++ {
-	// 		if rows[i].Tiles[x].Piece > 0 {
-	// 			break
-	// 		}
-	// 		res = append(res, entities.TileCoords{Row: i, Tile: x})
-	// 	}
+			valid, coords := trySetCoords(game, leftX, i)
+			if valid {
+				res = append(res, *coords)
+			}
 
-	// 	tiles := rows[y].Tiles
+			valid, coords = trySetCoords(game, rightX, i)
+			if valid {
+				res = append(res, *coords)
+			}
+		}
 
-	// 	//eastward movement
-	// 	for i := x + 1; i < len(tiles)-1; i++ {
-	// 		if tiles[i].Piece > 0 {
-	// 			break
-	// 		}
-	// 		res = append(res, entities.TileCoords{Row: y, Tile: i})
-	// 	}
+		return res, nil
+	},
+	eChess.KING: func(game *entities.Game, x int, y int) ([]entities.TileCoords, error) {
+		//todo: avoid movement where eaten
 
-	// 	//westward movement
-	// 	for i := x - 1; i > -1; i-- {
-	// 		if tiles[i].Piece > 0 {
-	// 			break
-	// 		}
-	// 		res = append(res, entities.TileCoords{Row: y, Tile: i})
-	// 	}
-	// },
+		res := []entities.TileCoords{}
+
+		//left
+		valid, coords := trySetCoords(game, x-1, y)
+		if valid {
+			res = append(res, *coords)
+		}
+		//right
+		valid, coords = trySetCoords(game, x+1, y)
+		if valid {
+			res = append(res, *coords)
+		}
+		//topleft
+		valid, coords = trySetCoords(game, x-1, y-1)
+		if valid {
+			res = append(res, *coords)
+		}
+		//topright
+		valid, coords = trySetCoords(game, x+1, y-1)
+		if valid {
+			res = append(res, *coords)
+		} //top
+		valid, coords = trySetCoords(game, x, y-1)
+		if valid {
+			res = append(res, *coords)
+		}
+		//bottom
+		valid, coords = trySetCoords(game, x, y+1)
+		if valid {
+			res = append(res, *coords)
+		}
+		//bottomleft
+		valid, coords = trySetCoords(game, x-1, y+1)
+		if valid {
+			res = append(res, *coords)
+		}
+		//bottomright
+		valid, coords = trySetCoords(game, x+1, y+1)
+		if valid {
+			res = append(res, *coords)
+		}
+		return res, nil
+	},
 }
