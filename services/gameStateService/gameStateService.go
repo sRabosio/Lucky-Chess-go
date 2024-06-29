@@ -12,32 +12,31 @@ func New() *GameStateService {
 	return &GameStateService{}
 }
 
-func (g GameStateService) MovePiece(game *entities.Game, playerCode string, pieceCoords entities.TileCoords, targetCoords entities.TileCoords) bool {
-	panic("not implemented")
-	// moveset, err := g.GetMoveset(game, playerCode, pieceCoords)
-	// if err != nil {
-	// 	return false
-	// }
+func (g GameStateService) MovePiece(game *entities.Game, playerCode string, pieceCoords entities.TileCoords, targetCoords entities.TileCoords) error {
+	moveset, err := g.GetMoveset(game, playerCode, pieceCoords)
+	if err != nil {
+		return err
+	}
 
-	// isMoveValid := false
-	// for _, coords := range moveset {
-	// 	if targetCoords.Row == coords.Row && targetCoords.Tile == coords.Tile {
-	// 		isMoveValid = true
-	// 	}
-	// }
-	// if !isMoveValid {
-	// 	return false
-	// }
+	isMoveValid := false
+	for _, coords := range moveset {
+		if targetCoords.Row == coords.Row && targetCoords.Tile == coords.Tile {
+			isMoveValid = true
+		}
+	}
+	if !isMoveValid {
+		return errors.New("MovePieceService -> invalid move")
+	}
 
-	// piece := game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece
-	// plId := game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID
+	piece := game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece
+	plId := game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID
 
-	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece = 0
-	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID = ""
+	game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece = 0
+	game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID = ""
 
-	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].Piece = piece
-	// game.Board.Rows[pieceCoords.Row].Tiles[pieceCoords.Tile].PlayerID = plId
-	// return true
+	game.Board.Rows[targetCoords.Row].Tiles[targetCoords.Tile].Piece = piece
+	game.Board.Rows[targetCoords.Row].Tiles[targetCoords.Tile].PlayerID = plId
+	return nil
 }
 
 func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pieceCoords entities.TileCoords) ([]entities.TileCoords, error) {

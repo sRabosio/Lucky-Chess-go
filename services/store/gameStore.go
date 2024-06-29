@@ -1,6 +1,7 @@
 package gameStore
 
 import (
+	"errors"
 	"luckyChess/entities"
 	eChess "luckyChess/entities/EChess"
 	"strconv"
@@ -8,6 +9,17 @@ import (
 
 type GameStoreService struct {
 	gameList map[string]entities.Game
+}
+
+func (g GameStoreService) hasCode(code string) bool {
+	hasCode := false
+	for k := range g.gameList {
+		hasCode = k == code
+		if hasCode {
+			break
+		}
+	}
+	return hasCode
 }
 
 func New() *GameStoreService {
@@ -52,11 +64,17 @@ func (g GameStoreService) GetGame(gameCode string) entities.Game {
 	return g.gameList[gameCode]
 }
 
-func (g GameStoreService) KillGame(gameCode string) bool {
+func (g GameStoreService) KillGame(gameCode string) error {
 	delete(g.gameList, gameCode)
-	return true
+	return nil
 }
 
-func (g GameStoreService) ApplyChanges(code string, game entities.Game) bool {
-	return false
+func (g GameStoreService) ApplyChanges(code string, game entities.Game) error {
+	if !g.hasCode(code) {
+		return errors.New("GameStoreService -> game does not exists")
+	}
+
+	//TODO: should verify validity of input
+	g.gameList[code] = game
+	return nil
 }

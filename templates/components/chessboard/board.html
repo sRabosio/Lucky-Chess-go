@@ -1,12 +1,20 @@
 <div class="h-100 m-auto chessboard-grid " id="board">
-  {{range $rNum, $row := .Board.Rows}}
+  {{range $rNum, $row := .Game.Board.Rows}}
   <div>
     {{range $tNum, $tile := $row.Tiles}}
+    {{if or (eq $tile.State "eat") (eq $tile.State "highlighted")}}
+    <div class="d-flex text-center align-items-center justify-content-center" hx-on="click"
+      hx-get="/board/movePiece?pieceX={{$.SelectedX}}&pieceY={{$.SelectedY}}&targetX={{$tNum}}&targetY={{$rNum}}"
+      hx-target="#board" hx-swap="outerHTML" data-state="{{$tile.State}}">
+      {{$tile.Piece}}
+    </div>
+    {{else}}
     <div class="d-flex text-center align-items-center justify-content-center" hx-on="click"
       hx-get="/board/getMoves?x={{$tNum}}&y={{$rNum}}" hx-target="#board" hx-swap="outerHTML"
       data-state="{{$tile.State}}">
       {{$tile.Piece}}
     </div>
+    {{end}}
     {{end}}
   </div>
   {{end}}

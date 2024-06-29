@@ -10,6 +10,12 @@ type Game struct {
 	CardStack         []Card
 }
 
+type BoardViewState struct {
+	Game      Game
+	SelectedX int
+	SelectedY int
+}
+
 type Board struct {
 	Rows [8]Row
 }
