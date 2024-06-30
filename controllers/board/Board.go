@@ -170,7 +170,7 @@ func getMoves(context *gin.Context) {
 	moveSet, err := _gameStateService.GetMoveset(&game, "1", entities.TileCoords{Tile: x, Row: y})
 
 	if err != nil {
-		status = http.StatusOK
+		status = http.StatusBadRequest
 		return
 	}
 

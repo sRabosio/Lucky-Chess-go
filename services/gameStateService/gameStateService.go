@@ -46,6 +46,8 @@ func (g GameStateService) GetMoveset(game *entities.Game, playerCode string, pie
 
 	res := []entities.TileCoords{}
 	//TODO CHECK PLAYER TYPE: ex(first or second/ black or white)
+	//or not actually: player's POV will always be the bottom pieces?????
+	//board will need to be flipped at some point for someone
 
 	rowNum := len(game.Board.Rows)
 	if y > rowNum-1 {
