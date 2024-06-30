@@ -30,7 +30,7 @@
       <!--shared ui-->
       <!--TODO: move content to component -->
 
-      <div class="h-100 w-100 d-flex" hx-get="/board" hx-swap="innerHTML" hx-trigger="load, requestError"
+      <div id="board" class="h-100 w-100 d-flex" hx-get="/board" hx-swap="innerHTML" hx-trigger="load, requestError"
         hx-on:htmx:response-error="onBoardResponseError(event)">
       </div>
     </div>
@@ -43,6 +43,9 @@
 <script>
   let boardRetries = 0
   const onBoardResponseError = e => {
+
+    if (e.target.id != 'board') return
+
     if (boardRetries > 2) {
       alert('too many retires!\ntry again later.')
       return
