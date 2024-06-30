@@ -234,40 +234,48 @@ var chessMoveset = map[eChess.EChess]movesetGetter{
 
 		res := []entities.TileCoords{}
 
-		leftX := x
-		rightX := x
-		//up movement
+		currentX := x
+		//up left
 		for i := y - 1; i > -1; i-- {
-			leftX--
-			rightX++
-
-			valid, coords := trySetCoords(game, leftX, i)
-			if valid {
-				res = append(res, *coords)
+			currentX--
+			valid, coords := trySetCoords(game, currentX, i)
+			if !valid {
+				break
 			}
-
-			valid, coords = trySetCoords(game, rightX, i)
-			if valid {
-				res = append(res, *coords)
-			}
+			res = append(res, *coords)
 		}
 
-		//down movement
-		leftX = x
-		rightX = x
-		for i := y + 1; i < len(game.Board.Rows)-1; i++ {
-			leftX--
-			rightX++
-
-			valid, coords := trySetCoords(game, leftX, i)
-			if valid {
-				res = append(res, *coords)
+		currentX = x
+		//up right
+		for i := y - 1; i > -1; i-- {
+			currentX++
+			valid, coords := trySetCoords(game, currentX, i)
+			if !valid {
+				break
 			}
+			res = append(res, *coords)
+		}
 
-			valid, coords = trySetCoords(game, rightX, i)
-			if valid {
-				res = append(res, *coords)
+		//down left
+		currentX = x
+		for i := y + 1; i < len(game.Board.Rows); i++ {
+			currentX--
+			valid, coords := trySetCoords(game, currentX, i)
+			if !valid {
+				break
 			}
+			res = append(res, *coords)
+		}
+
+		//donw right
+		currentX = x
+		for i := y + 1; i < len(game.Board.Rows); i++ {
+			currentX++
+			valid, coords := trySetCoords(game, currentX, i)
+			if !valid {
+				break
+			}
+			res = append(res, *coords)
 		}
 
 		return res, nil
