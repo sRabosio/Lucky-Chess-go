@@ -6,7 +6,7 @@ import (
 
 type IGameStoreService interface {
 	NewGame(startingSet entities.BoardTemplate) entities.Game
-	GetGame(code string) entities.Game
+	GetGame(code string) (entities.Game, error)
 	KillGame(code string) error
 	ApplyChanges(code string, game entities.Game) error
 }

@@ -30,7 +30,8 @@
       <!--shared ui-->
       <!--TODO: move content to component -->
 
-      <div class="h-100 w-100 d-flex" hx-get="/board" hx-swap="innerHTML" hx-trigger="load">
+      <div class="h-100 w-100 d-flex" hx-get="/board" hx-swap="innerHTML" hx-trigger="load, requestError"
+        hx-on:htmx:response-error="onBoardResponseError(event)">
       </div>
     </div>
     <div class="row " style="height: 15%; background-color:rgba(0,200,0 ,0.1);">
@@ -39,3 +40,15 @@
     </div>
   </div>
 </div>
+<script>
+  let boardRetries = 0
+  const onBoardResponseError = e => {
+    if (boardRetries > 2) {
+      alert('too many retires!\ntry again later.')
+      return
+    }
+    console.log('couldn\'t load game, retrying...')
+    htmx.trigger(e.target, 'requestError')
+    boardRetries++
+  }
+</script>

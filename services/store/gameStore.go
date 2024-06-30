@@ -60,8 +60,13 @@ func (g GameStoreService) NewGame(startingSet entities.BoardTemplate) entities.G
 	return newGame
 }
 
-func (g GameStoreService) GetGame(gameCode string) entities.Game {
-	return g.gameList[gameCode]
+func (g GameStoreService) GetGame(gameCode string) (entities.Game, error) {
+
+	if !g.hasCode(gameCode) {
+		return entities.Game{}, errors.New("GameStoreService -> game does not exists")
+	}
+
+	return g.gameList[gameCode], nil
 }
 
 func (g GameStoreService) KillGame(gameCode string) error {

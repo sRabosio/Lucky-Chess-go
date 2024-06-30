@@ -4,9 +4,9 @@ import (
 	"luckyChess/entities"
 	"luckyChess/services/interfaces"
 	"net/http"
+	"net/url"
 	"strconv"
 
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,23 +31,29 @@ func Register(router *gin.Engine,
 
 func getBoard(context *gin.Context) {
 
-	store, err := cookie.Store.Get(cookie.NewStore(), context.Request, "gameCode")
-
+	gamecode, err := context.Request.Cookie("gamecode")
 	var game entities.Game
 
 	if err != nil {
-		context.AbortWithError(500, err)
-		return
-	}
-
-	val := store.Values["code"]
-
-	if val == nil {
 		game = _gameStoreService.NewGame(
 			_gameTemplateService.GetTemplate("default"),
 		)
+		context.SetCookie("gamecode", "1", 500000, "/", "localhost", false, true)
 	} else {
-		game = _gameStoreService.GetGame(val.(string))
+		val, err := url.QueryUnescape(gamecode.Value)
+
+		if err != nil {
+			context.AbortWithError(500, err)
+			return
+		}
+
+		game, err = _gameStoreService.GetGame(val)
+
+		if err != nil {
+			context.SetCookie("gamecode", "", -1, "/", "localhost", false, true)
+			context.AbortWithError(404, err)
+			return
+		}
 	}
 
 	context.HTML(
@@ -61,7 +67,13 @@ func getBoard(context *gin.Context) {
 
 func movePiece(context *gin.Context) {
 	var err error
-	game := _gameStoreService.GetGame("1")
+	game, err := _gameStoreService.GetGame("1")
+
+	if err != nil {
+		context.AbortWithError(404, err)
+		return
+	}
+
 	status := http.StatusOK
 
 	defer func() {
@@ -131,7 +143,13 @@ func getMoves(context *gin.Context) {
 
 	var err error
 	var x, y int
-	game := _gameStoreService.GetGame("1")
+	game, err := _gameStoreService.GetGame("1")
+
+	if err != nil {
+		context.AbortWithError(404, err)
+		return
+	}
+
 	status := http.StatusOK
 
 	defer func() {
