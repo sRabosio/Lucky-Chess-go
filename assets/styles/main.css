@@ -52,3 +52,6 @@
 .chessboard-grid *[data-state=highlighted]{
   background-color: darkgoldenrod !important;
 }
+.chessboard-grid *[data-state=eat]{
+  background-color: red !important;
+}
