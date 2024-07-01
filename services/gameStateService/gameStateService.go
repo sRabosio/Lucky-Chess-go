@@ -114,8 +114,9 @@ func trySetCoords(game *entities.Game, xCurr int, yCurr int) (bool, *entities.Ti
 	}
 
 	if game.Board.Rows[yCurr].Tiles[xCurr].Piece > 0 {
-		return false, nil
+		return false, &entities.TileCoords{Row: yCurr, Tile: xCurr}
 	}
+
 	return true, &entities.TileCoords{Row: yCurr, Tile: xCurr}
 }
 
@@ -127,18 +128,21 @@ var chessMoveset = map[eChess.EChess]movesetGetter{
 		res := []entities.TileCoords{}
 
 		//in front
-		if game.Board.Rows[y-1].Tiles[x].Piece < 1 {
-			res = append(res, entities.TileCoords{Tile: x, Row: y - 1})
+		valid, coords := trySetCoords(game, y-1, x)
+		if valid {
+			res = append(res, *coords)
 		}
 
 		//right
-		if len(game.Board.Rows[y-1].Tiles) < x && game.Board.Rows[y-1].Tiles[x-1].Piece > 0 {
+		valid, coords = trySetCoords(game, y-1, x-1)
+		if valid && game.Board.Rows[coords.Row].Tiles[coords.Tile].Piece > 0 {
 			res = append(res, entities.TileCoords{Tile: x - 1, Row: y})
 		}
 
 		//left
-		if len(game.Board.Rows[y-1].Tiles) < x && game.Board.Rows[y-1].Tiles[x+1].Piece > 0 {
-			res = append(res, entities.TileCoords{Tile: x + 1, Row: y})
+		valid, coords = trySetCoords(game, y-1, x+1)
+		if valid && game.Board.Rows[coords.Row].Tiles[coords.Tile].Piece > 0 {
+			res = append(res, entities.TileCoords{Tile: x - 1, Row: y})
 		}
 
 		return res, nil
