@@ -35,9 +35,10 @@ func main() {
 	router.Static("static", "./assets")
 
 	//load templates
-	router.LoadHTMLGlob("templates/**/*.html")
-	router.LoadHTMLGlob("templates/**/**/*.html")
-
+	router.LoadHTMLFiles(
+		"templates/components/chessboard/board.html",
+		"templates/pages/game/game.html",
+		"templates/pages/master.html")
 	initRoutes(router)
 
 	//start server

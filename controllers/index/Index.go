@@ -1,7 +1,7 @@
 package index
 
 import (
-	"html/template"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +16,9 @@ func Register(router *gin.Engine) {
 
 func getIndex(context *gin.Context) {
 
-	templ := template.Must(template.ParseFiles(folderPath + "master.html"))
-	templ.Execute(context.Writer, nil)
+	context.HTML(
+		http.StatusOK,
+		"master.html",
+		nil,
+	)
 }
