@@ -49,3 +49,8 @@ type Card struct {
 type BoardTemplate struct {
 	Template []map[int]map[int]string
 }
+
+type User struct {
+	Code     string
+	Nickname string
+}

@@ -24,3 +24,11 @@ type IGameTemplatesService interface {
 	AtlerTemplate(name string, template entities.BoardTemplate) error
 	RemoveTemplate(name string, template entities.BoardTemplate) error
 }
+
+type IUserService interface {
+	GetUser(code string) (entities.User, error)
+	GenerateUser(nickname string) (entities.User, error)
+	DeleteUser(code string) error
+	HasUser(code string) (bool, error)
+	UpdateUser(user entities.User) error
+}
