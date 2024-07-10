@@ -38,6 +38,32 @@
 
   </div>
   </div>
+  <dialog id="dialogUser">
+    <h1>no user</h1>
+  </dialog>
+  <dialog id="dialogGame">
+    <h1>no game</h1>
+  </dialog>
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sessionStatus = '{{.sessionStatus }}'
+    /**@type {HTMLDialogElement}*/
+    const dialogUser = document.getElementById('dialogUser')
+    /**@type {HTMLDialogElement}*/
+    const dialogGame = document.getElementById('dialogGame')
+
+    switch (sessionStatus) {
+      case 'NO_USER':
+        dialogUser.showModal()
+        break;
+      case 'NO_GAME':
+        dialogGame.showModal()
+        break;
+      default:
+        break;
+    }
+  })
+</script>
 
 </html>

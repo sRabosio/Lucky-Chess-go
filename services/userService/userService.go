@@ -71,6 +71,7 @@ func (g UserService) DeleteUser(code string) error {
 	return nil
 }
 func (g UserService) HasUser(code string) (bool, error) {
+
 	hasCode := false
 	for k := range g.userMap {
 		hasCode = k == code
