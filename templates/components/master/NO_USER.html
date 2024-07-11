@@ -1,0 +1,45 @@
+<dialog id="dialogUser">
+  <form method="modal" hx-swap="none" hx-post="/user/registerNickname"
+    hx-on="htmx:afterRequest:onRegisterNickname(event)" style="height: 100%;">
+
+    <div class="modal-content" style="height: 100%;">
+      <div class="modal-header" style="padding-bottom: 20px;">
+        <h3>Register a nickname</h1>
+      </div>
+      <div class="modal-body">
+        <input required placeholder="type your nickname..." name="nickname" type="text" style="width: 100%;">
+      </div>
+      <div class="modal-footer" style="padding-top: 20px">
+        <button type="submit" class="btn btn-success pull-right">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<script>
+
+  /**@type {(e:Event)=>void}*/
+  const onRegisterNickname = e => {
+    /**@type {HTMLDialogElement}*/
+    const dialogUser = htmx.find('#dialogUser')
+
+    if (e.detail.failed) {
+      alert(`Couldn't register nickname`)
+      return
+    }
+
+    htmx.ajax('GET', '/getStatusDialog', {
+      event: e,
+      swap: 'outerHTML',
+      target: '#dialogUser'
+    })
+  }
+
+  htmx.onLoad(() => {
+    htmx.find('#dialogUser')
+      .showModal()
+  })
+
+</script>

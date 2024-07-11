@@ -7,8 +7,8 @@
   <meta name="htmx-config" content='{"code2":".*", "swap": "true"}'>
   <!-- libs -->
   <link rel="stylesheet" href="static/lib/bootstrap/css/bootstrap.css">
-  <script src="static/lib/bootstrap/js/bootstrap.js" defer="true"></script>
-  <script src="static/lib/htmx/htmx.min.js" defer="true"></script>
+  <script src="static/lib/bootstrap/js/bootstrap.js"></script>
+  <script src="static/lib/htmx/htmx.min.js"></script>
   <!-- local -->
   <link rel="stylesheet" href="static/styles/main.css">
   <title>Lucky chess</title>
@@ -38,32 +38,10 @@
 
   </div>
   </div>
-  <dialog id="dialogUser">
-    <h1>no user</h1>
-  </dialog>
-  <dialog id="dialogGame">
-    <h1>no game</h1>
-  </dialog>
-</body>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const sessionStatus = '{{.sessionStatus }}'
-    /**@type {HTMLDialogElement}*/
-    const dialogUser = document.getElementById('dialogUser')
-    /**@type {HTMLDialogElement}*/
-    const dialogGame = document.getElementById('dialogGame')
+  <div hx-trigger="load" hx-get="/getStatusDialog" hx-swap="outerHTML">
 
-    switch (sessionStatus) {
-      case 'NO_USER':
-        dialogUser.showModal()
-        break;
-      case 'NO_GAME':
-        dialogGame.showModal()
-        break;
-      default:
-        break;
-    }
-  })
-</script>
+  </div>
+</body>
+
 
 </html>

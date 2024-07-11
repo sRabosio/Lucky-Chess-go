@@ -25,6 +25,27 @@ func Register(
 	r := router.Group("/")
 
 	r.GET("", getIndex)
+	r.GET("getSessionStatus", func(ctx *gin.Context) {
+		sessionStatus, _, _ := getSessionStatus(ctx.Request)
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"sessionStatus": sessionStatus,
+		})
+	})
+	r.GET("getStatusDialog", getStatusDialog)
+}
+
+func getIndex(context *gin.Context) {
+
+	sessionStatus, _, _ := getSessionStatus(context.Request)
+
+	context.HTML(
+		http.StatusOK,
+		"master.html",
+		gin.H{
+			"sessionStatus": sessionStatus.String(),
+		},
+	)
 }
 
 func getSessionStatus(req *http.Request) (eSessionStatus.ESessionStatus, string, string) {
@@ -51,15 +72,13 @@ func getSessionStatus(req *http.Request) (eSessionStatus.ESessionStatus, string,
 	return eSessionStatus.IN_GAME, userCodeCookie.Value, gameCodeCookie.Value
 }
 
-func getIndex(context *gin.Context) {
+func getStatusDialog(context *gin.Context) {
+	status, _, _ := getSessionStatus(context.Request)
 
-	sessionStatus, _, _ := getSessionStatus(context.Request)
+	if status == eSessionStatus.IN_GAME {
+		context.String(http.StatusOK, "")
+		return
+	}
 
-	context.HTML(
-		http.StatusOK,
-		"master.html",
-		gin.H{
-			"sessionStatus": sessionStatus.String(),
-		},
-	)
+	context.HTML(http.StatusOK, status.String()+".html", nil)
 }

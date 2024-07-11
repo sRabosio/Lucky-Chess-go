@@ -1,57 +1,67 @@
-.chessboard > tbody > tr:nth-child(even) > td:nth-child(even){
+.chessboard>tbody>tr:nth-child(even)>td:nth-child(even) {
   background-color: brown;
 }
 
-.chessboard > tbody > tr:nth-child(even) > td:nth-child(odd){
+.chessboard>tbody>tr:nth-child(even)>td:nth-child(odd) {
   background-color: bisque;
 }
 
-.chessboard > tbody > tr:nth-child(odd) > td:nth-child(even){
+.chessboard>tbody>tr:nth-child(odd)>td:nth-child(even) {
   background-color: bisque;
 }
 
-.chessboard > tbody > tr:nth-child(odd) > td:nth-child(odd){
+.chessboard>tbody>tr:nth-child(odd)>td:nth-child(odd) {
   background-color: brown;
 }
 
-.chessboard-grid{
+.chessboard-grid {
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   aspect-ratio: 1;
 }
 
-.chessboard-grid *{
+.chessboard-grid * {
   cursor: default;
 }
 
-.chessboard-grid > *{
+.chessboard-grid>* {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
-.chessboard-grid > *:nth-child(even) > *:nth-child(even){
+.chessboard-grid>*:nth-child(even)>*:nth-child(even) {
   background-color: brown;
 }
 
-.chessboard-grid  > *:nth-child(even) > *:nth-child(odd){
+.chessboard-grid>*:nth-child(even)>*:nth-child(odd) {
   background-color: bisque;
 }
 
-.chessboard-grid  > *:nth-child(odd) > *:nth-child(even){
+.chessboard-grid>*:nth-child(odd)>*:nth-child(even) {
   background-color: bisque;
 }
 
-.chessboard-grid  > *:nth-child(odd) > *:nth-child(odd){
+.chessboard-grid>*:nth-child(odd)>*:nth-child(odd) {
   background-color: brown;
 }
 
-.chessboard-grid *[data-state=selected]{
+.chessboard-grid *[data-state=selected] {
   background-color: green !important;
 }
 
-.chessboard-grid *[data-state=highlighted]{
+.chessboard-grid *[data-state=highlighted] {
   background-color: darkgoldenrod !important;
 }
-.chessboard-grid *[data-state=eat]{
+
+.chessboard-grid *[data-state=eat] {
   background-color: red !important;
+}
+
+dialog {
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 5px 5px 6px 0px rgb(87, 87, 87);
+  height: 300px;
+  width: 300px;
 }

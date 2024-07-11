@@ -6,6 +6,7 @@ import (
 	"luckyChess/controllers/board"
 	"luckyChess/controllers/game"
 	"luckyChess/controllers/index"
+	userController "luckyChess/controllers/user"
 	"luckyChess/services/gameStateService"
 	"luckyChess/services/gameTemplateService"
 	GameStoreService "luckyChess/services/store"
@@ -34,7 +35,10 @@ func main() {
 	router.LoadHTMLFiles(
 		"templates/components/chessboard/board.html",
 		"templates/pages/game/game.html",
-		"templates/pages/master.html")
+		"templates/pages/master.html",
+		"templates/components/master/NO_GAME.html",
+		"templates/components/master/NO_USER.html",
+	)
 	initRoutes(router)
 
 	//start server
@@ -47,9 +51,15 @@ func initRoutes(router *gin.Engine) {
 	index.Register(router,
 		_userService,
 		gameStoreService)
+
 	game.Register(router, gameStoreService)
+
 	board.Register(router, gameStoreService,
 		gameTemplateService.New(),
 		gameStateService.New())
+
+	userController.Register(router,
+		_userService,
+		gameStoreService)
 	//end register routes
 }
