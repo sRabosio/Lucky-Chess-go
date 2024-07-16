@@ -4,7 +4,9 @@ import (
 	"errors"
 	"luckyChess/entities"
 	eChess "luckyChess/entities/EChess"
+	"luckyChess/utils"
 	"strconv"
+	"strings"
 )
 
 type GameStoreService struct {
@@ -28,7 +30,7 @@ func New() *GameStoreService {
 	}
 }
 
-func (g GameStoreService) NewGame(startingSet entities.BoardTemplate) entities.Game {
+func (g GameStoreService) NewGame(startingSet entities.BoardTemplate) (entities.Game, string, error) {
 
 	board := entities.Board{
 		Rows: [8]entities.Row{},
@@ -56,8 +58,27 @@ func (g GameStoreService) NewGame(startingSet entities.BoardTemplate) entities.G
 		Board: board,
 	}
 
-	g.gameList["1"] = newGame
-	return newGame
+	gamecode := utils.RandomString(8)
+
+	g.gameList[gamecode] = newGame
+	return newGame, gamecode, nil
+}
+
+func (g GameStoreService) FindPlayersGame(playerCode string) (entities.Game, string, error) {
+
+	if strings.Trim(playerCode, " ") == "" {
+		return entities.Game{}, "", errors.New("invalid player code")
+	}
+
+	for k, v := range g.gameList {
+		for _, p := range v.Players {
+			if playerCode == p {
+				return v, k, nil
+			}
+		}
+	}
+
+	return entities.Game{}, "", errors.New("this player isn't in any game")
 }
 
 func (g GameStoreService) GetGame(gameCode string) (entities.Game, error) {

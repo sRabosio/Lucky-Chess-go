@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,38 +32,64 @@ func Register(router *gin.Engine,
 
 func getBoard(context *gin.Context) {
 
-	gamecode, err := context.Request.Cookie("gamecode")
-	var game entities.Game
+	gamecodeCookie, err := context.Request.Cookie("gamecode")
+
+	game := entities.Game{}
+	gamecode := ""
+
+	defer func() {
+		context.HTML(
+			http.StatusOK,
+			"board.html",
+			entities.BoardViewState{
+				Game: game,
+			},
+		)
+	}()
 
 	if err != nil {
-		game = _gameStoreService.NewGame(
-			_gameTemplateService.GetTemplate("default"),
-		)
-		context.SetCookie("gamecode", "1", 500000, "/", "localhost", false, true)
-	} else {
-		val, err := url.QueryUnescape(gamecode.Value)
+
+		userCodeCookie, err := context.Request.Cookie("usercode")
 
 		if err != nil {
-			context.AbortWithError(500, err)
+			println("no usercode")
 			return
 		}
 
-		game, err = _gameStoreService.GetGame(val)
+		usercode, err := url.QueryUnescape(userCodeCookie.Value)
 
-		if err != nil {
-			context.SetCookie("gamecode", "", -1, "/", "localhost", false, true)
-			context.AbortWithError(404, err)
+		if err != nil || strings.Trim(usercode, " ") == "" {
+			context.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
+
+		game, gamecode, err = _gameStoreService.FindPlayersGame(usercode)
+
+		if err != nil {
+			println("no game saved")
+			return
+		}
+
+		//user's game's code was not stored in session but did exist
+		context.SetCookie("gamecode", gamecode, 50000, "/", "localhost", false, true)
+
+		return
+
 	}
 
-	context.HTML(
-		http.StatusOK,
-		"board.html",
-		entities.BoardViewState{
-			Game: game,
-		},
-	)
+	gamecode, err = url.QueryUnescape(gamecodeCookie.Value)
+
+	if err != nil {
+		context.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	game, err = _gameStoreService.GetGame(gamecode)
+
+	if err != nil || strings.Trim(gamecode, " ") == "" {
+		context.SetCookie("gamecode", "", -1, "/", "localhost", false, true)
+		return
+	}
 }
 
 func movePiece(context *gin.Context) {

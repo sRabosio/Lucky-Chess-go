@@ -4,7 +4,7 @@ import eChess "luckyChess/entities/EChess"
 
 type Game struct {
 	Board             Board
-	Players           []Player
+	Players           []string
 	TurnCounter       int
 	CurrentPlayerTurn string
 	CardStack         []Card

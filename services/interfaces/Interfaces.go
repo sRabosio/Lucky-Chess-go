@@ -5,8 +5,9 @@ import (
 )
 
 type IGameStoreService interface {
-	NewGame(startingSet entities.BoardTemplate) entities.Game
+	NewGame(startingSet entities.BoardTemplate) (entities.Game, string, error)
 	GetGame(code string) (entities.Game, error)
+	FindPlayersGame(playerCode string) (entities.Game, string, error)
 	KillGame(code string) error
 	ApplyChanges(code string, game entities.Game) error
 }

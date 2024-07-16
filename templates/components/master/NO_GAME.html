@@ -1,3 +1,37 @@
-<dialog id="dialogGame">
-  <h1>no game</h1>
-</dialog>
+<div id="containerDialogGame">
+  <dialog id="dialogGame">
+    <h1>no game</h1>
+  </dialog>
+
+  <script>
+
+    window.NO_GAME = {
+      /**@type {(e:Event)=>void}*/
+      onGameDialogAction: function (e) {
+        /**@type {HTMLDialogElement}*/
+        const dialog = htmx.find('#dialogGame')
+
+        if (e.detail.failed) {
+          alert(`Couldn't start game`)
+          return
+        }
+
+        htmx.ajax('GET', '/getStatusDialog', {
+          event: e,
+          swap: 'outerHTML',
+          target: '#containerDialogGame'
+        })
+          .then(this._cleanup)
+      },
+
+      _cleanup: () => window.NO_GAME = undefined
+
+    }
+
+    htmx.onLoad(() => {
+      htmx.find('#dialogGame')
+        ?.showModal()
+    })
+
+  </script>
+</div>
