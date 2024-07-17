@@ -93,7 +93,8 @@
         await Velocity(targetTitle, {
           marginTop: '0px'
         }, {
-          duration: '100ms'
+          duration: '200ms',
+          easing: 'ease-out'
         })
           .promise
 
@@ -101,47 +102,50 @@
       },
       /**@type {(target:HTMLElement)=>Promise<void>}*/
       toggleGameOptionAnimation: function (target) {
-        if (this.isGameOptionAnimationRunning) return
+        if (this.isGameOptionAnimationRunning ||
+          target.classList.contains('dialogGame-optionOpen')
+        ) return
         this.isGameOptionAnimationRunning = true
         const sibling = target.nextElementSibling || target.previousElementSibling
         /**@type {HTMLElement}*/
         const siblingTitle = htmx.find(sibling, 'span.display-3')
+        const targetTitle = htmx.find(target, 'span.display-3')
         /**@type {Promise[]}*/
         const animationPromises = []
 
         applyStyles(siblingTitle, {
-          marginTop: 'auto'
+          marginTop: 'auto',
         })
 
-        htmx.addClass(
-          siblingTitle,
+        applyStyles(targetTitle, {
+          marginTop: 'auto',
+        })
+
+        htmx.removeClass(
+          htmx.find(target, 'span.display-3'),
           'd-none'
         )
 
 
-        animationPromises.push(Velocity(target, {
-          width: '90%'
-        }, {
-          duration: 300,
-          easing: 'ease-out'
-        }).promise)
 
-        animationPromises.push(Velocity(sibling, {
-          width: '10%'
-        }, {
-          easing: 'ease-out',
-          duration: 300
-        }).promise)
+        htmx.removeClass(sibling, 'dialogGame-optionOpen')
+        htmx.removeClass(sibling, 'dialogGame-optionClose')
+        htmx.addClass(sibling, 'dialogGame-optionClose')
+
+        htmx.removeClass(target, 'dialogGame-optionOpen')
+        htmx.removeClass(target, 'dialogGame-optionClose')
+        htmx.addClass(target, 'dialogGame-optionOpen')
+
         wait(100).then(() => {
-          htmx.removeClass(
-            htmx.find(target, 'span.display-3'),
+          htmx.addClass(
+            siblingTitle,
             'd-none'
           )
+
         })
 
 
-
-        return Promise.allSettled(animationPromises)
+        return wait(300)
       },
       _cleanup: () => window.NO_GAME = undefined
     }
