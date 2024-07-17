@@ -1,4 +1,4 @@
-<div style="display:contents;">
+<div style="display:contents;" hx-on="htmx:beforeSwap:NO_USER._cleanup">
   <dialog id="dialogUser">
     <form method="modal" hx-swap="none" hx-post="/user/registerNickname"
       hx-on="htmx:afterRequest:NO_USER.onRegisterNickname(event)" style="height: 100%;">
@@ -42,7 +42,6 @@
           swap: 'outerHTML',
           target: htmx.find('#dialogUser').parentElement
         })
-          .then(this._cleanup)
       },
       _cleanup: () => window.NO_USER = undefined
     }

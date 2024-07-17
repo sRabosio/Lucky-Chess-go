@@ -1,6 +1,64 @@
-<div id="containerDialogGame">
-  <dialog id="dialogGame">
-    <h1>no game</h1>
+<div id="containerDialogGame" hx-on="htmx:beforeSwap:NO_GAME._cleanup">
+  <style>
+    #dialogGame .modal-body>* {
+      width: 50%;
+      overflow: hidden;
+    }
+
+    #dialogGame .modal-body>* * {
+      user-select: none;
+    }
+
+    #dialogGame .modal-body>*:first-child {
+      border-radius: 5px 0 0 5px;
+      background-color: rgba(0, 0, 255, 0.321);
+      transition: ease-in 200ms;
+    }
+
+    #dialogGame .modal-body>*:last-child {
+      border-radius: 0 5px 5px 0;
+      background-color: rgba(255, 166, 0, 0.321);
+      transition: ease-in 200ms;
+    }
+
+
+    #dialogGame .modal-body>*:first-child:hover {
+      background-color: rgba(0, 0, 255, 0.8);
+      cursor: pointer;
+      transition: ease-out 200ms;
+    }
+
+    #dialogGame .modal-body>*:last-child:hover {
+      background-color: rgba(255, 166, 0, 0.8);
+      cursor: pointer;
+      transition: ease-out 200ms;
+    }
+
+    .dialogGame-optionOpen {
+      width: 90% !important;
+      transition: ease-out 300ms !important;
+    }
+
+    .dialogGame-optionClose {
+      width: 10% !important;
+      transition: ease-out 300ms !important;
+    }
+  </style>
+  <dialog id="dialogGame" style="min-width: 700px;min-height: 500px;">
+    <div class="modal-content" style="height: 100%;">
+      <div class="modal-header" style="padding-bottom: 20px;">
+        <h3>You're not currently in a game</h1>
+      </div>
+      <div class="modal-body d-flex flex-row">
+        <div class="container-fluid d-flex" onclick="NO_GAME.onGameOptionClick(event)">
+          <span class="display-3" style="margin: auto;">New game</h2>
+        </div>
+        <div class="container-fluid d-flex" onclick="NO_GAME.onGameOptionClick(event)">
+          <span class="display-3" style="margin: auto;">Join game</h2>
+        </div>
+      </div>
+    </div>
+
   </dialog>
 
   <script>
@@ -21,11 +79,71 @@
           swap: 'outerHTML',
           target: '#containerDialogGame'
         })
-          .then(this._cleanup)
       },
+      isGameOptionAnimationRunning: false,
+      /**@type {(e:PointerEvent)=>void}*/
+      onGameOptionClick: async function (e) {
+        /**@type {HTMLElement}*/
+        const t = e.currentTarget
+        /**@type {HTMLElement}*/
+        const targetTitle = htmx.find(t, 'span.display-3')
 
+        await this.toggleGameOptionAnimation(t)
+
+        await Velocity(targetTitle, {
+          marginTop: '0px'
+        }, {
+          duration: '100ms'
+        })
+          .promise
+
+        this.isGameOptionAnimationRunning = false
+      },
+      /**@type {(target:HTMLElement)=>Promise<void>}*/
+      toggleGameOptionAnimation: function (target) {
+        if (this.isGameOptionAnimationRunning) return
+        this.isGameOptionAnimationRunning = true
+        const sibling = target.nextElementSibling || target.previousElementSibling
+        /**@type {HTMLElement}*/
+        const siblingTitle = htmx.find(sibling, 'span.display-3')
+        /**@type {Promise[]}*/
+        const animationPromises = []
+
+        applyStyles(siblingTitle, {
+          marginTop: 'auto'
+        })
+
+        htmx.addClass(
+          siblingTitle,
+          'd-none'
+        )
+
+
+        animationPromises.push(Velocity(target, {
+          width: '90%'
+        }, {
+          duration: 300,
+          easing: 'ease-out'
+        }).promise)
+
+        animationPromises.push(Velocity(sibling, {
+          width: '10%'
+        }, {
+          easing: 'ease-out',
+          duration: 300
+        }).promise)
+        wait(100).then(() => {
+          htmx.removeClass(
+            htmx.find(target, 'span.display-3'),
+            'd-none'
+          )
+        })
+
+
+
+        return Promise.allSettled(animationPromises)
+      },
       _cleanup: () => window.NO_GAME = undefined
-
     }
 
     htmx.onLoad(() => {
